@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyCast — Weather Forecast</title>
+    <meta name="description" content="SkyCast — a modern weather forecast application powered by the Open-Meteo API.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- ====================== HEADER ====================== -->
+    <header class="header" role="banner">
+        <div class="header__container">
+            <!-- Brand / Logo -->
+            <div class="header__brand">
+                <i data-lucide="cloud-sun" class="header__logo" aria-hidden="true"></i>
+                <span class="header__title">SkyCast</span>
+            </div>
+
+            <!-- Search & Geolocation -->
+            <nav class="header__search" aria-label="City search">
+                <div class="search__wrapper">
+                    <i data-lucide="search" class="search__icon" aria-hidden="true"></i>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search__input"
+                        placeholder="Search for a city..."
+                        aria-label="Search for a city"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button id="searchBtn" class="btn btn--primary" aria-label="Search city" title="Search">
+                        <i data-lucide="search" aria-hidden="true"></i>
+                    </button>
+                    <button id="locationBtn" class="btn btn--ghost" aria-label="Use current location" title="Use my location">
+                        <i data-lucide="locate-fixed" aria-hidden="true"></i>
+                    </button>
+                    <button id="themeToggle" class="btn btn--ghost" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <i data-lucide="moon" aria-hidden="true"></i>
+                    </button>
+
+                    <!-- Search results dropdown -->
+                    <div id="searchResults" class="search__results" role="listbox" aria-label="Search results"></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ====================== MAIN ====================== -->
+    <main class="main" role="main">
+
+        <!-- Loading indicator -->
+        <div id="loading" class="loading" aria-live="polite" hidden>
+            <div class="loading__spinner" aria-hidden="true"></div>
+            <p class="loading__text">Fetching weather data…</p>
+        </div>
+
+        <!-- Error message -->
+        <div id="error" class="error" role="alert" hidden>
+            <i data-lucide="alert-triangle" class="error__icon" aria-hidden="true"></i>
+            <p id="errorMessage" class="error__text"></p>
+        </div>
+
+        <!-- Weather content -->
+        <div id="content" class="content" aria-live="polite">
+
+            <!-- ====== A. CURRENT WEATHER ====== -->
+            <section class="current-weather card" aria-label="Current weather">
+                <div class="current-weather__hero">
+                    <div class="current-weather__location">
+                        <i data-lucide="map-pin" aria-hidden="true"></i>
+                        <div class="current-weather__city-info">
+                            <h2 id="cityName" class="current-weather__city">—</h2>
+                            <p id="cityRegion" class="current-weather__region">—</p>
+                        </div>
+                    </div>
+
+                    <div class="current-weather__main">
+                        <span id="currentIcon" class="current-weather__icon"></span>
+                        <div class="current-weather__temp-group">
+                            <span id="currentTemp" class="current-weather__temp">—°</span>
+                            <span class="current-weather__unit">C</span>
+                        </div>
+                    </div>
+
+                    <p id="currentCondition" class="current-weather__condition">—</p>
+
+                    <div class="current-weather__meta">
+                        <span id="feelsLike" class="current-weather__feels">Feels like —°</span>
+                        <span class="current-weather__separator" aria-hidden="true">•</span>
+                        <span id="dayNightIndicator" class="current-weather__day-night">
+                            <i data-lucide="sun" aria-hidden="true"></i>
+                            <span>—</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="current-weather__stats">
+                    <div class="stat">
+                        <i data-lucide="droplets" class="stat__icon" aria-hidden="true"></i>
+                        <span class="stat__label">Humidity</span>
+                        <span id="humidity" class="stat__value">—</span>
+                    </div>
+                    <div class="stat">
+                        <i data-lucide="wind" class="stat__icon" aria-hidden="true"></i>
+                        <span class="stat__label">Wind Speed</span>
+                        <span id="windSpeed" class="stat__value">—</span>
+                    </div>
+                    <div class="stat">
+                        <i data-lucide="cloud-rain" class="stat__icon" aria-hidden="true"></i>
+                        <span class="stat__label">Precipitation</span>
+                        <span id="precipitation" class="stat__value">—</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== B. HOURLY FORECAST ====== -->
+            <section class="forecast-section" aria-label="Hourly forecast">
+                <h2 class="section__title">
+                    <i data-lucide="clock-3" aria-hidden="true"></i>
+                    <span>Next 24 Hours</span>
+                </h2>
+                <div id="hourlyForecast" class="hourly-forecast" role="list"></div>
+            </section>
+
+            <!-- ====== C. 7-DAY FORECAST ====== -->
+            <section class="forecast-section" aria-label="7-day forecast">
+                <h2 class="section__title">
+                    <i data-lucide="calendar-days" aria-hidden="true"></i>
+                    <span>7-Day Forecast</span>
+                </h2>
+                <div id="dailyForecast" class="daily-forecast" role="list"></div>
+            </section>
+
+            <!-- ====== D. ADDITIONAL INFORMATION ====== -->
+            <section class="forecast-section" aria-label="Additional weather information">
+                <h2 class="section__title">
+                    <i data-lucide="gauge" aria-hidden="true"></i>
+                    <span>Additional Information</span>
+                </h2>
+                <div id="additionalInfo" class="additional-info"></div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ====================== FOOTER ====================== -->
+    <footer class="footer" role="contentinfo">
+        <p>
+            Weather data by
+            <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+        </p>
+        <p class="footer__updated">Last updated: <span id="lastUpdated">—</span></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
