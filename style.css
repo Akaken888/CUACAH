@@ -1164,7 +1164,52 @@ body.dark .hourly-forecast::-webkit-scrollbar-thumb {
     transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
 }
 
-/* ---------- 18. Reduced Motion ---------- */
+/* ---------- 18. Floating WhatsApp Button ---------- */
+.wa-float {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    cursor: pointer;
+    transition: all var(--t-base);
+    animation: wa-pulse 2.5s ease-in-out infinite;
+}
+
+.wa-float i,
+.wa-float svg {
+    width: 28px;
+    height: 28px;
+    color: #fff;
+}
+
+.wa-float:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 10px 28px rgba(37, 211, 102, 0.5);
+}
+
+.wa-float:active {
+    transform: scale(1.05);
+}
+
+.wa-float:focus-visible {
+    outline: 3px solid #25d366;
+    outline-offset: 3px;
+}
+
+@keyframes wa-pulse {
+    0%, 100% { box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); }
+    50% { box-shadow: 0 6px 28px rgba(37, 211, 102, 0.6); }
+}
+
+/* ---------- 19. Reduced Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
