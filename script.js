@@ -488,9 +488,13 @@ function displayAdditionalInformation(data) {
     const daily = data.daily;
     const todayIdx = 0;
 
-    // Helper to build an info card
+    // Helper to build an info card wrapped in a Bootstrap col
     // variant: '' (pink default), 'warm' (amber), 'cool' (blue), 'purple' (lavender)
     function makeCard(iconName, label, value, sub, variant = '') {
+        // Bootstrap column wrapper
+        const col = document.createElement('div');
+        col.className = 'col-12 col-sm-6 col-lg-4 col-xl';
+
         const card = document.createElement('div');
         card.className = 'info-card fade-in';
 
@@ -499,7 +503,7 @@ function displayAdditionalInformation(data) {
         iconBox.appendChild(createIcon(iconName));
 
         const body = document.createElement('div');
-        body.className = 'info-card__body';
+        body.className = 'd-flex flex-column';
 
         const labelEl = document.createElement('span');
         labelEl.className = 'info-card__label';
@@ -519,7 +523,8 @@ function displayAdditionalInformation(data) {
         }
 
         card.append(iconBox, body);
-        return card;
+        col.appendChild(card);
+        return col;
     }
 
     // Sunrise — warm amber
